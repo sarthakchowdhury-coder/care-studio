@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareStudio — Cohort Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/styles/variables.css">
+<link rel="stylesheet" href="src/styles/main.css">
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-tabs">
+    <div class="topbar-tab active">Active Consultation</div>
+    <div class="topbar-tab">View Patient 360</div>
+  </div>
+  <div class="topbar-right">
+    <span>No. of call attempts</span>
+    <div class="call-count">0</div>
+  </div>
+</div>
+
+<!-- PATIENT HEADER -->
+<div class="patient-header">
+  <div class="patient-name-row">
+    <div class="patient-name">
+      Nirmala Nirmala
+      <span class="program-badge">PROGRAM</span>
+    </div>
+    <div class="patient-actions">
+      <button class="btn-action btn-outline">👤 Profiles</button>
+      <button class="btn-action btn-outline">🔔 Send Reminder</button>
+      <button class="btn-action btn-outline">🎫 Raise a Ticket</button>
+      <button class="btn-action btn-dark">📞 Call</button>
+    </div>
+  </div>
+  <div class="patient-email">nirmaladhamu1521@gmail.com</div>
+
+  <div class="main-tabs">
+    <div class="main-tab active" onclick="switchTab('patient')">Patient Details</div>
+    <div class="main-tab" onclick="switchTab('medical')">Medical History</div>
+    <div class="main-tab" onclick="switchTab('lifestyle')">Lifestyle Details</div>
+    <div class="main-tab" onclick="switchTab('cohort')">Cohortization</div>
+    <div class="main-tab" onclick="switchTab('medication')">Medication &amp; Rx</div>
+    <div class="main-tab" onclick="switchTab('review')">Final Review</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ── PATIENT DETAILS (Q1–Q6, Q10, Q11) ── -->
+  <div class="tab-panel active" id="tab-patient">
+    <div class="section-heading">Basic Details</div>
+    <div class="card">
+      <div class="form-grid">
+        <!-- Q1: Age -->
+        <div class="field">
+          <div class="field-label">Age<span class="req">*</span></div>
+          <input type="number" class="form-input" id="age" placeholder="e.g. 45" min="18" max="100" oninput="calcBMI();calcScore()">
+        </div>
+        <!-- Q2: Gender -->
+        <div class="field">
+          <div class="field-label">Gender<span class="req">*</span></div>
+          <div class="select-wrap">
+            <select class="form-select" id="gender" onchange="updateWaist();calcScore()">
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <!-- Q3: Height -->
+        <div class="field">
+          <div class="field-label">Height (cm)<span class="req">*</span></div>
+          <input type="number" class="form-input" id="height" placeholder="e.g. 165" oninput="calcBMI()">
+          <div class="bmi-tag" id="bmiTag"></div>
+        </div>
+        <!-- Q4: Weight -->
+        <div class="field">
+          <div class="field-label">Weight (kg)<span class="req">*</span></div>
+          <input type="number" class="form-input" id="weight" placeholder="e.g. 68" oninput="calcBMI()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Waist -->
+    <div class="card">
+      <div class="card-title">Q5 — Waist Circumference</div>
+      <div id="waistMenBlock" style="display:none;">
+        <div class="field-label" style="margin-bottom:8px;">Men — waist range (inches)</div>
+        <div class="chip-group" id="waistMenChips">
+          <div class="chip" onclick="selectChip('waistMen','28-32',this)">28–32</div>
+          <div class="chip" onclick="selectChip('waistMen','34-36',this)">34–36</div>
+          <div class="chip" onclick="selectChip('waistMen','38-40',this)">38–40</div>
+          <div class="chip" onclick="selectChip('waistMen','40+',this)">40 and above</div>
+        </div>
+      </div>
+      <div id="waistWomenBlock" style="display:none;">
+        <div class="field-label" style="margin-bottom:8px;">Women — waist range (inches)</div>
+        <div class="chip-group" id="waistWomenChips">
+          <div class="chip" onclick="selectChip('waistWomen','28-30',this)">28–30</div>
+          <div class="chip" onclick="selectChip('waistWomen','30-34',this)">30–34</div>
+          <div class="chip" onclick="selectChip('waistWomen','34-36',this)">34–36</div>
+          <div class="chip" onclick="selectChip('waistWomen','36+',this)">36 and above</div>
+        </div>
+      </div>
+      <div id="waistHint" style="font-size:12px;color:var(--g4);">Select gender in Patient Details to see waist options.</div>
+    </div>
+
+    <!-- Q6: Chronic disease -->
+    <div class="card">
+      <div class="card-title">Q6 — Chronic Disease Presence (3+ months)</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('chronic','No',this);calcScore()">No</div>
+        <div class="chip" onclick="selectChip('chronic','Yes',this);calcScore()">Yes — diabetes, hypertension, or CVD</div>
+      </div>
+    </div>
+
+    <!-- Q10: Comorbidities -->
+    <div class="card">
+      <div class="card-title">Q10 — Comorbidities</div>
+      <div class="chip-group" id="comorbChips">
+        <div class="chip" onclick="toggleComorb('hypertension',this)">Hypertension (High BP)</div>
+        <div class="chip" onclick="toggleComorb('cholesterol',this)">High Cholesterol</div>
+        <div class="chip" onclick="toggleComorb('pcos',this)">PCOS</div>
+        <div class="chip" id="comorbNoneChip" onclick="clearComorb(this)">None of the above</div>
+      </div>
+    </div>
+
+    <!-- Q11: Blood sugar -->
+    <div class="card">
+      <div class="card-title">Q11 — Fasting Blood Sugar (FBS)</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('fbs','normal',this)">&lt; 100 mg/dl — Normal</div>
+        <div class="chip" onclick="selectChip('fbs','prediabetes',this)">100–120 mg/dl — Impaired / Prediabetes</div>
+        <div class="chip" onclick="selectChip('fbs','diabetic',this)">&gt; 120 mg/dl — High / Diabetic</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-reset" onclick="switchTab('lifestyle')">Next: Lifestyle Details →</button>
+    </div>
+  </div>
+
+  <!-- ── MEDICAL HISTORY ── -->
+  <div class="tab-panel" id="tab-medical">
+    <div class="section-heading">Medical History</div>
+    <div class="card" style="color:var(--g3);font-size:13px;padding:32px;text-align:center;">
+      Existing medical history fields — unchanged from current CareStudio
+    </div>
+  </div>
+
+  <!-- ── LIFESTYLE DETAILS (Q7–Q9) ── -->
+  <div class="tab-panel" id="tab-lifestyle">
+    <div class="section-heading">Lifestyle Details</div>
+
+    <!-- Q7: Smoking -->
+    <div class="card">
+      <div class="card-title">Q7 — Smoking Status</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('smoking','No',this);calcScore()">No / never smoked</div>
+        <div class="chip" onclick="selectChip('smoking','Yes',this);calcScore()">Yes / previously smoked</div>
+      </div>
+    </div>
+
+    <!-- Q8: Alcohol -->
+    <div class="card">
+      <div class="card-title">Q8 — Alcohol Use</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('alcohol','No',this);calcScore()">No / occasionally</div>
+        <div class="chip" onclick="selectChip('alcohol','Yes',this);calcScore()">Yes regularly</div>
+      </div>
+    </div>
+
+    <!-- Q9: Sleep -->
+    <div class="card">
+      <div class="card-title">Q9 — Sleep Duration</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('sleep','10+',this);calcScore()">More than 10 hours</div>
+        <div class="chip" onclick="selectChip('sleep','7-9',this);calcScore()">7–9 hours</div>
+        <div class="chip" onclick="selectChip('sleep','5-6',this);calcScore()">5–6 hours</div>
+      </div>
+    </div>
+
+    <!-- Metabolic score summary -->
+    <div class="score-bar" id="scoreBar">
+      <div>
+        <div class="score-bar-title">Metabolic Risk Score (Section 1)</div>
+        <div class="score-bar-val" id="totalScore">0</div>
+      </div>
+      <div class="score-items">
+        <div class="score-item"><div class="score-item-val" id="sAge">—</div><div class="score-item-label">Age</div></div>
+        <div class="score-item"><div class="score-item-val" id="sBMI">—</div><div class="score-item-label">BMI</div></div>
+        <div class="score-item"><div class="score-item-val" id="sWaist">—</div><div class="score-item-label">Waist</div></div>
+        <div class="score-item"><div class="score-item-val" id="sChronic">—</div><div class="score-item-label">Chronic</div></div>
+        <div class="score-item"><div class="score-item-val" id="sSmoke">—</div><div class="score-item-label">Smoking</div></div>
+        <div class="score-item"><div class="score-item-val" id="sAlcohol">—</div><div class="score-item-label">Alcohol</div></div>
+        <div class="score-item"><div class="score-item-val" id="sSleep">—</div><div class="score-item-label">Sleep</div></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-reset" onclick="switchTab('cohort')">Next: Cohortization →</button>
+    </div>
+  </div>
+
+  <!-- ── COHORTIZATION ── -->
+  <div class="tab-panel" id="tab-cohort">
+    <div class="section-heading">Cohortization</div>
+
+    <!-- SECTION 2 — compulsory -->
+    <div class="card">
+      <span class="cond-badge compulsory">● Compulsory — all patients</span>
+      <div class="card-title">Section 2 — Insulin Resistance &amp; Glycaemic Status</div>
+      <div class="form-grid form-grid-2" style="margin-bottom:16px;">
+        <div class="field">
+          <div class="field-label">Tested for diabetes?<span class="req">*</span></div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('tested','Yes',this);toggleHba1c()">Yes</div>
+            <div class="chip" onclick="selectChip('tested','No',this);toggleHba1c()">No</div>
+          </div>
+        </div>
+        <div class="field" id="hba1cField" style="display:none;">
+          <div class="field-label">HbA1c status</div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('hba1c','prediabetes',this)">Prediabetic (&lt;6.2%)</div>
+            <div class="chip" onclick="selectChip('hba1c','diabetic',this)">Diabetic (&gt;6.2%)</div>
+            <div class="chip" onclick="selectChip('hba1c','normal',this)">Normal / Not confirmed</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid form-grid-2">
+        <div class="field">
+          <div class="field-label">Family history of diabetes?<span class="req">*</span></div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('family','Yes',this)">Yes (parent / sibling)</div>
+            <div class="chip" onclick="selectChip('family','No',this)">No</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Triglyceride level<span class="req">*</span></div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('tg','normal',this)">Normal (&lt;150 mg/dL)</div>
+            <div class="chip" onclick="selectChip('tg','high',this)">High (≥150 mg/dL)</div>
+            <div class="chip" onclick="selectChip('tg','unknown',this)">Not known</div>
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px;">
+        <div class="field-label">Symptoms — frequent thirst / urination / fatigue<span class="req">*</span></div>
+        <div class="chip-group">
+          <div class="chip" onclick="selectChip('symp','never',this)">Never (0)</div>
+          <div class="chip" onclick="selectChip('symp','often',this)">Often (2)</div>
+          <div class="chip" onclick="selectChip('symp','daily',this)">Daily (3)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3 — MOD / Adipose -->
+    <div class="conditional-block" id="sec3">
+      <div class="card">
+        <span class="cond-badge triggered">⚡ Opened — BMI &gt;25 or elevated waist detected</span>
+        <div class="card-title">Section 3 — Adipose-Inflammatory (Cohort 1 — MOD)</div>
+        <div class="form-grid form-grid-3">
+          <div class="field">
+            <div class="field-label">Snoring or sleep apnea?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('snore','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('snore','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Joint pain or swelling?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('joint','Never',this)">Never</div>
+              <div class="chip" onclick="selectChip('joint','Often',this)">Often</div>
+              <div class="chip" onclick="selectChip('joint','Daily',this)">Daily</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Recent infections / slow healing?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('infec','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('infec','No',this)">No</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 — Lipotoxic / Cholesterol -->
+    <div class="conditional-block" id="sec4">
+      <div class="card">
+        <span class="cond-badge triggered">⚡ Opened — High cholesterol flagged</span>
+        <div class="card-title">Section 4 — Lipotoxic / Dyslipidemia (Cohort 3)</div>
+        <div class="form-grid form-grid-3">
+          <div class="field">
+            <div class="field-label">High TG or low HDL on lipids?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('hdl','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('hdl','No',this)">No</div>
+              <div class="chip" onclick="selectChip('hdl','Unknown',this)">Not tested</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Fatty liver / NAFLD?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('nafld','Yes',this)">Yes (USG confirmed)</div>
+              <div class="chip" onclick="selectChip('nafld','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Chest pain after activity?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('chest','Never',this)">Never</div>
+              <div class="chip" onclick="selectChip('chest','Often',this)">Often</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 — Vascular / Hypertension -->
+    <div class="conditional-block" id="sec5">
+      <div class="card">
+        <span class="cond-badge triggered">⚡ Opened — Hypertension flagged</span>
+        <div class="card-title">Section 5 — Vascular Assessment (Cohort 4)</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <div class="field-label">HTN diagnosis or BP &gt;140/90?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('htn','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('htn','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">HTN duration &gt;5 years?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('htnDur','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('htnDur','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Leg swelling / headaches / vision changes?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('vascSymp','Never',this)">Never</div>
+              <div class="chip" onclick="selectChip('vascSymp','Often',this)">Often</div>
+              <div class="chip" onclick="selectChip('vascSymp','Daily',this)">Daily</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Family history of heart disease / stroke?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('heartFam','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('heartFam','No',this)">No</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT (shown after assign) -->
+    <div id="resultBlock" style="display:none;"></div>
+
+    <div class="val-msg" id="valMsg">Please complete all required fields in Section 2 before assigning cohort.</div>
+    <div class="btn-row">
+      <button class="btn-reset" onclick="resetCohort()">Reset</button>
+      <button class="btn-save" id="btnAssign" onclick="assignCohort()">Assign Cohort</button>
+    </div>
+  </div>
+
+  <!-- ── MEDICATION ── -->
+  <div class="tab-panel" id="tab-medication">
+    <div class="section-heading">Medication &amp; Rx</div>
+    <div class="card" style="color:var(--g3);font-size:13px;padding:32px;text-align:center;">
+      Existing medication and prescription fields — unchanged from current CareStudio
+    </div>
+  </div>
+
+  <!-- ── FINAL REVIEW ── -->
+  <div class="tab-panel" id="tab-review">
+    <div class="section-heading">Final Review</div>
+    <div class="card" style="color:var(--g3);font-size:13px;padding:32px;text-align:center;">
+      Existing final review fields — unchanged from current CareStudio
+    </div>
+  </div>
+
+</div><!-- end content -->
+
+<!-- Load scripts as ES modules -->
+<script type="module" src="src/js/main.js"></script>
+
+</body>
+</html>
