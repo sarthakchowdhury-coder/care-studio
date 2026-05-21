@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareStudio — Cohort Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --olive:      #6b7c3a;
+  --olive-d:    #556030;
+  --olive-l:    #eef2e4;
+  --olive-btn:  #7a8f42;
+  --ink:        #1a1a1a;
+  --g1:         #333333;
+  --g2:         #555555;
+  --g3:         #888888;
+  --g4:         #bbbbbb;
+  --border:     #d8d8d8;
+  --bg:         #f4f4f2;
+  --white:      #ffffff;
+  --card:       #ffffff;
+  --tab-active: #6b7c3a;
+  --red:        #c0392b;
+  --amber:      #b07800;
+  --amber-l:    #fff8e6;
+  --c1:         #4a5e00;
+  --c1l:        #eef3d8;
+  --c2:         #1a5c8b;
+  --c2l:        #e8f2fb;
+  --c3:         #7a3a00;
+  --c3l:        #fef2e6;
+  --c4:         #5a1a6b;
+  --c4l:        #f5eafa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.topbar-tabs {
+  display: flex;
+  gap: 8px;
+}
+.topbar-tab {
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  color: var(--g2);
+  background: var(--white);
+  transition: all .15s;
+}
+.topbar-tab.active {
+  background: var(--olive);
+  color: var(--white);
+  border-color: var(--olive);
+}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--g3);
+}
+.call-attempts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.call-count {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--g2);
+}
+
+/* ── PATIENT HEADER ── */
+.patient-header {
+  background: var(--white);
+  padding: 20px 24px 0;
+  border-bottom: 1px solid var(--border);
+}
+.patient-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.patient-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.program-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--olive);
+  color: var(--olive);
+  letter-spacing: .04em;
+}
+.patient-email {
+  font-size: 13px;
+  color: var(--g3);
+  margin-bottom: 16px;
+}
+.patient-actions {
+  display: flex;
+  gap: 10px;
+}
+.btn-action {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Inter', sans-serif;
+  transition: all .15s;
+}
+.btn-outline {
+  background: var(--white);
+  border: 1.5px solid var(--olive);
+  color: var(--olive);
+}
+.btn-outline:hover { background: var(--olive-l); }
+.btn-dark {
+  background: var(--ink);
+  color: var(--white);
+}
+.btn-dark:hover { background: #333; }
+
+/* ── MAIN TABS ── */
+.main-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: none;
+  margin-top: 16px;
+}
+.main-tab {
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--g2);
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.main-tab:hover { color: var(--olive); }
+.main-tab.active {
+  color: var(--olive);
+  border-bottom-color: var(--olive);
+  background: var(--white);
+}
+
+/* ── CONTENT ── */
+.content {
+  padding: 24px;
+  max-width: 1100px;
+}
+
+/* ── TAB PANELS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── SECTION HEADING ── */
+.section-heading {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--g2);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0ec;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+/* ── FORM GRID ── */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 24px;
+}
+.form-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field.span2 { grid-column: span 2; }
+.field-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--g2);
+}
+.field-label .req { color: var(--red); margin-left: 2px; }
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  background: var(--white);
+  outline: none;
+  transition: border-color .15s;
+  appearance: none;
+}
+.form-input:focus, .form-select:focus { border-color: var(--olive); }
+.form-input::placeholder { color: var(--g4); }
+
+.select-wrap {
+  position: relative;
+}
+.select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--g3);
+  pointer-events: none;
+  font-size: 12px;
+}
+.select-wrap select {
+  padding-right: 30px;
+}
+
+/* BMI display */
+.bmi-tag {
+  font-size: 11px;
+  color: var(--olive);
+  font-weight: 500;
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+/* ── CHIP GROUP ── */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+.chip {
+  padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--g2);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+  background: var(--white);
+}
+.chip:hover { border-color: var(--olive); color: var(--olive); }
+.chip.selected {
+  border-color: var(--olive);
+  background: var(--olive-l);
+  color: var(--olive-d);
+}
+
+/* ── CONDITIONAL SECTION ── */
+.conditional-block {
+  display: none;
+  animation: fadeSlide .25s ease;
+}
+.conditional-block.visible { display: block; }
+@keyframes fadeSlide { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+.cond-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.cond-badge.compulsory { background: #e8f2fb; color: #1a5c8b; }
+.cond-badge.triggered  { background: var(--amber-l); color: var(--amber); }
+
+/* ── SCORE BAR ── */
+.score-bar {
+  background: var(--ink);
+  border-radius: 8px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.score-bar-title {
+  font-size: 11px;
+  color: rgba(255,255,255,.4);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 2px;
+}
+.score-bar-val {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--white);
+}
+.score-items {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.score-item { text-align: center; }
+.score-item-val {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+}
+.score-item-label {
+  font-size: 10px;
+  color: rgba(255,255,255,.35);
+  margin-top: 1px;
+}
+
+/* ── RESULT ── */
+.result-hero {
+  border-radius: 8px;
+  padding: 28px 32px;
+  margin-bottom: 16px;
+  border: 1.5px solid;
+}
+.cohort-1 { background: var(--c1l); color: var(--c1); border-color: #b8cc80; }
+.cohort-2 { background: var(--c2l); color: var(--c2); border-color: #90c0e0; }
+.cohort-3 { background: var(--c3l); color: var(--c3); border-color: #e0a870; }
+.cohort-4 { background: var(--c4l); color: var(--c4); border-color: #c090d8; }
+
+.result-num {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .6;
+  margin-bottom: 6px;
+}
+.result-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.result-desc {
+  font-size: 13px;
+  opacity: .75;
+  line-height: 1.55;
+  max-width: 560px;
+}
+
+.result-detail-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin-bottom: 12px;
+}
+.result-detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--g3);
+  margin-bottom: 10px;
+}
+.result-detail-body {
+  font-size: 13px;
+  color: var(--g1);
+  line-height: 1.6;
+}
+.result-detail-body strong { color: var(--ink); }
+
+.override-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: var(--amber-l);
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.presc-note {
+  background: var(--amber-l);
+  border: 1px solid #e8c870;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--amber);
+  margin-top: 10px;
+  display: flex;
+  gap: 6px;
+}
+
+.kit-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+.kit-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+}
+.kit-card-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--g3);
+  margin-bottom: 5px;
+}
+.kit-card-val {
+  font-size: 12px;
+  color: var(--g3);
+  font-style: italic;
+}
+
+/* ── SAVE BUTTON ROW ── */
+.btn-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+.btn-save {
+  padding: 10px 24px;
+  background: var(--olive);
+  color: var(--white);
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-save:hover { background: var(--olive-d); }
+.btn-save:disabled { background: var(--g4); cursor: not-allowed; }
+.btn-reset {
+  padding: 10px 20px;
+  background: var(--white);
+  color: var(--g2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-reset:hover { border-color: var(--g3); color: var(--ink); }
+
+/* validation */
+.val-msg {
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 8px;
+  display: none;
+}
+.val-msg.show { display: block; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-tabs">
+    <div class="topbar-tab active">Active Consultation</div>
+    <div class="topbar-tab">View Patient 360</div>
+  </div>
+  <div class="topbar-right">
+    <span>No. of call attempts</span>
+    <div class="call-count">0</div>
+  </div>
+</div>
+
+<!-- PATIENT HEADER -->
+<div class="patient-header">
+  <div class="patient-name-row">
+    <div class="patient-name">
+      Nirmala Nirmala
+      <span class="program-badge">PROGRAM</span>
+    </div>
+    <div class="patient-actions">
+      <button class="btn-action btn-outline">👤 Profiles</button>
+      <button class="btn-action btn-outline">🔔 Send Reminder</button>
+      <button class="btn-action btn-outline">🎫 Raise a Ticket</button>
+      <button class="btn-action btn-dark">📞 Call</button>
+    </div>
+  </div>
+  <div class="patient-email">nirmaladhamu1521@gmail.com</div>
+
+  <div class="main-tabs">
+    <div class="main-tab active" onclick="switchTab('patient')">Patient Details</div>
+    <div class="main-tab" onclick="switchTab('medical')">Medical History</div>
+    <div class="main-tab" onclick="switchTab('lifestyle')">Lifestyle Details</div>
+    <div class="main-tab" onclick="switchTab('cohort')">Cohortization</div>
+    <div class="main-tab" onclick="switchTab('medication')">Medication &amp; Rx</div>
+    <div class="main-tab" onclick="switchTab('review')">Final Review</div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <!-- ── PATIENT DETAILS (Q1–Q6, Q10, Q11) ── -->
+  <div class="tab-panel active" id="tab-patient">
+    <div class="section-heading">Basic Details</div>
+    <div class="card">
+      <div class="form-grid">
+        <!-- Q1: Age -->
+        <div class="field">
+          <div class="field-label">Age<span class="req">*</span></div>
+          <input type="number" class="form-input" id="age" placeholder="e.g. 45" min="18" max="100" oninput="calcBMI();calcScore()">
+        </div>
+        <!-- Q2: Gender -->
+        <div class="field">
+          <div class="field-label">Gender<span class="req">*</span></div>
+          <div class="select-wrap">
+            <select class="form-select" id="gender" onchange="updateWaist();calcScore()">
+              <option value="">Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <!-- Q3: Height -->
+        <div class="field">
+          <div class="field-label">Height (cm)<span class="req">*</span></div>
+          <input type="number" class="form-input" id="height" placeholder="e.g. 165" oninput="calcBMI()">
+          <div class="bmi-tag" id="bmiTag"></div>
+        </div>
+        <!-- Q4: Weight -->
+        <div class="field">
+          <div class="field-label">Weight (kg)<span class="req">*</span></div>
+          <input type="number" class="form-input" id="weight" placeholder="e.g. 68" oninput="calcBMI()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Waist -->
+    <div class="card">
+      <div class="card-title">Q5 — Waist Circumference</div>
+      <div id="waistMenBlock" style="display:none;">
+        <div class="field-label" style="margin-bottom:8px;">Men — waist range (inches)</div>
+        <div class="chip-group" id="waistMenChips">
+          <div class="chip" onclick="selectChip('waistMen','28-32',this)">28–32</div>
+          <div class="chip" onclick="selectChip('waistMen','34-36',this)">34–36</div>
+          <div class="chip" onclick="selectChip('waistMen','38-40',this)">38–40</div>
+          <div class="chip" onclick="selectChip('waistMen','40+',this)">40 and above</div>
+        </div>
+      </div>
+      <div id="waistWomenBlock" style="display:none;">
+        <div class="field-label" style="margin-bottom:8px;">Women — waist range (inches)</div>
+        <div class="chip-group" id="waistWomenChips">
+          <div class="chip" onclick="selectChip('waistWomen','28-30',this)">28–30</div>
+          <div class="chip" onclick="selectChip('waistWomen','30-34',this)">30–34</div>
+          <div class="chip" onclick="selectChip('waistWomen','34-36',this)">34–36</div>
+          <div class="chip" onclick="selectChip('waistWomen','36+',this)">36 and above</div>
+        </div>
+      </div>
+      <div id="waistHint" style="font-size:12px;color:var(--g4);">Select gender in Patient Details to see waist options.</div>
+    </div>
+
+    <!-- Q6: Chronic disease -->
+    <div class="card">
+      <div class="card-title">Q6 — Chronic Disease Presence (3+ months)</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('chronic','No',this);calcScore()">No</div>
+        <div class="chip" onclick="selectChip('chronic','Yes',this);calcScore()">Yes — diabetes, hypertension, or CVD</div>
+      </div>
+    </div>
+
+    <!-- Q10: Comorbidities -->
+    <div class="card">
+      <div class="card-title">Q10 — Comorbidities</div>
+      <div class="chip-group" id="comorbChips">
+        <div class="chip" onclick="toggleComorb('hypertension',this)">Hypertension (High BP)</div>
+        <div class="chip" onclick="toggleComorb('cholesterol',this)">High Cholesterol</div>
+        <div class="chip" onclick="toggleComorb('pcos',this)">PCOS</div>
+        <div class="chip" id="comorbNoneChip" onclick="clearComorb(this)">None of the above</div>
+      </div>
+    </div>
+
+    <!-- Q11: Blood sugar -->
+    <div class="card">
+      <div class="card-title">Q11 — Fasting Blood Sugar (FBS)</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('fbs','normal',this)">&lt; 100 mg/dl — Normal</div>
+        <div class="chip" onclick="selectChip('fbs','prediabetes',this)">100–120 mg/dl — Impaired / Prediabetes</div>
+        <div class="chip" onclick="selectChip('fbs','diabetic',this)">&gt; 120 mg/dl — High / Diabetic</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-reset" onclick="switchTab('lifestyle')">Next: Lifestyle Details →</button>
+    </div>
+  </div>
+
+  <!-- ── MEDICAL HISTORY ── -->
+  <div class="tab-panel" id="tab-medical">
+    <div class="section-heading">Medical History</div>
+    <div class="card" style="color:var(--g3);font-size:13px;padding:32px;text-align:center;">
+      Existing medical history fields — unchanged from current CareStudio
+    </div>
+  </div>
+
+  <!-- ── LIFESTYLE DETAILS (Q7–Q9) ── -->
+  <div class="tab-panel" id="tab-lifestyle">
+    <div class="section-heading">Lifestyle Details</div>
+
+    <!-- Q7: Smoking -->
+    <div class="card">
+      <div class="card-title">Q7 — Smoking Status</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('smoking','No',this);calcScore()">No / never smoked</div>
+        <div class="chip" onclick="selectChip('smoking','Yes',this);calcScore()">Yes / previously smoked</div>
+      </div>
+    </div>
+
+    <!-- Q8: Alcohol -->
+    <div class="card">
+      <div class="card-title">Q8 — Alcohol Use</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('alcohol','No',this);calcScore()">No / occasionally</div>
+        <div class="chip" onclick="selectChip('alcohol','Yes',this);calcScore()">Yes regularly</div>
+      </div>
+    </div>
+
+    <!-- Q9: Sleep -->
+    <div class="card">
+      <div class="card-title">Q9 — Sleep Duration</div>
+      <div class="chip-group">
+        <div class="chip" onclick="selectChip('sleep','10+',this);calcScore()">More than 10 hours</div>
+        <div class="chip" onclick="selectChip('sleep','7-9',this);calcScore()">7–9 hours</div>
+        <div class="chip" onclick="selectChip('sleep','5-6',this);calcScore()">5–6 hours</div>
+      </div>
+    </div>
+
+    <!-- Metabolic score summary -->
+    <div class="score-bar" id="scoreBar">
+      <div>
+        <div class="score-bar-title">Metabolic Risk Score (Section 1)</div>
+        <div class="score-bar-val" id="totalScore">0</div>
+      </div>
+      <div class="score-items">
+        <div class="score-item"><div class="score-item-val" id="sAge">—</div><div class="score-item-label">Age</div></div>
+        <div class="score-item"><div class="score-item-val" id="sBMI">—</div><div class="score-item-label">BMI</div></div>
+        <div class="score-item"><div class="score-item-val" id="sWaist">—</div><div class="score-item-label">Waist</div></div>
+        <div class="score-item"><div class="score-item-val" id="sChronic">—</div><div class="score-item-label">Chronic</div></div>
+        <div class="score-item"><div class="score-item-val" id="sSmoke">—</div><div class="score-item-label">Smoking</div></div>
+        <div class="score-item"><div class="score-item-val" id="sAlcohol">—</div><div class="score-item-label">Alcohol</div></div>
+        <div class="score-item"><div class="score-item-val" id="sSleep">—</div><div class="score-item-label">Sleep</div></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-reset" onclick="switchTab('cohort')">Next: Cohortization →</button>
+    </div>
+  </div>
+
+  <!-- ── COHORTIZATION ── -->
+  <div class="tab-panel" id="tab-cohort">
+    <div class="section-heading">Cohortization</div>
+
+    <!-- SECTION 2 — compulsory -->
+    <div class="card">
+      <span class="cond-badge compulsory">● Compulsory — all patients</span>
+      <div class="card-title">Section 2 — Insulin Resistance &amp; Glycaemic Status</div>
+      <div class="form-grid form-grid-2" style="margin-bottom:16px;">
+        <div class="field">
+          <div class="field-label">Tested for diabetes?<span class="req">*</span></div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('tested','Yes',this);toggleHba1c()">Yes</div>
+            <div class="chip" onclick="selectChip('tested','No',this);toggleHba1c()">No</div>
+          </div>
+        </div>
+        <div class="field" id="hba1cField" style="display:none;">
+          <div class="field-label">HbA1c status</div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('hba1c','prediabetes',this)">Prediabetic (&lt;6.2%)</div>
+            <div class="chip" onclick="selectChip('hba1c','diabetic',this)">Diabetic (&gt;6.2%)</div>
+            <div class="chip" onclick="selectChip('hba1c','normal',this)">Normal / Not confirmed</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-grid form-grid-2">
+        <div class="field">
+          <div class="field-label">Family history of diabetes?<span class="req">*</span></div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('family','Yes',this)">Yes (parent / sibling)</div>
+            <div class="chip" onclick="selectChip('family','No',this)">No</div>
+          </div>
+        </div>
+        <div class="field">
+          <div class="field-label">Triglyceride level<span class="req">*</span></div>
+          <div class="chip-group">
+            <div class="chip" onclick="selectChip('tg','normal',this)">Normal (&lt;150 mg/dL)</div>
+            <div class="chip" onclick="selectChip('tg','high',this)">High (≥150 mg/dL)</div>
+            <div class="chip" onclick="selectChip('tg','unknown',this)">Not known</div>
+          </div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px;">
+        <div class="field-label">Symptoms — frequent thirst / urination / fatigue<span class="req">*</span></div>
+        <div class="chip-group">
+          <div class="chip" onclick="selectChip('symp','never',this)">Never (0)</div>
+          <div class="chip" onclick="selectChip('symp','often',this)">Often (2)</div>
+          <div class="chip" onclick="selectChip('symp','daily',this)">Daily (3)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3 — MOD / Adipose -->
+    <div class="conditional-block" id="sec3">
+      <div class="card">
+        <span class="cond-badge triggered">⚡ Opened — BMI &gt;25 or elevated waist detected</span>
+        <div class="card-title">Section 3 — Adipose-Inflammatory (Cohort 1 — MOD)</div>
+        <div class="form-grid form-grid-3">
+          <div class="field">
+            <div class="field-label">Snoring or sleep apnea?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('snore','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('snore','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Joint pain or swelling?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('joint','Never',this)">Never</div>
+              <div class="chip" onclick="selectChip('joint','Often',this)">Often</div>
+              <div class="chip" onclick="selectChip('joint','Daily',this)">Daily</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Recent infections / slow healing?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('infec','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('infec','No',this)">No</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 — Lipotoxic / Cholesterol -->
+    <div class="conditional-block" id="sec4">
+      <div class="card">
+        <span class="cond-badge triggered">⚡ Opened — High cholesterol flagged</span>
+        <div class="card-title">Section 4 — Lipotoxic / Dyslipidemia (Cohort 3)</div>
+        <div class="form-grid form-grid-3">
+          <div class="field">
+            <div class="field-label">High TG or low HDL on lipids?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('hdl','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('hdl','No',this)">No</div>
+              <div class="chip" onclick="selectChip('hdl','Unknown',this)">Not tested</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Fatty liver / NAFLD?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('nafld','Yes',this)">Yes (USG confirmed)</div>
+              <div class="chip" onclick="selectChip('nafld','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Chest pain after activity?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('chest','Never',this)">Never</div>
+              <div class="chip" onclick="selectChip('chest','Often',this)">Often</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5 — Vascular / Hypertension -->
+    <div class="conditional-block" id="sec5">
+      <div class="card">
+        <span class="cond-badge triggered">⚡ Opened — Hypertension flagged</span>
+        <div class="card-title">Section 5 — Vascular Assessment (Cohort 4)</div>
+        <div class="form-grid form-grid-2">
+          <div class="field">
+            <div class="field-label">HTN diagnosis or BP &gt;140/90?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('htn','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('htn','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">HTN duration &gt;5 years?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('htnDur','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('htnDur','No',this)">No</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Leg swelling / headaches / vision changes?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('vascSymp','Never',this)">Never</div>
+              <div class="chip" onclick="selectChip('vascSymp','Often',this)">Often</div>
+              <div class="chip" onclick="selectChip('vascSymp','Daily',this)">Daily</div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="field-label">Family history of heart disease / stroke?</div>
+            <div class="chip-group">
+              <div class="chip" onclick="selectChip('heartFam','Yes',this)">Yes</div>
+              <div class="chip" onclick="selectChip('heartFam','No',this)">No</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT (shown after assign) -->
+    <div id="resultBlock" style="display:none;"></div>
+
+    <div class="val-msg" id="valMsg">Please complete all required fields in Section 2 before assigning cohort.</div>
+    <div class="btn-row">
+      <button class="btn-reset" onclick="resetCohort()">Reset</button>
+      <button class="btn-save" id="btnAssign" onclick="assignCohort()">Assign Cohort</button>
+    </div>
+  </div>
+
+  <!-- ── MEDICATION ── -->
+  <div class="tab-panel" id="tab-medication">
+    <div class="section-heading">Medication &amp; Rx</div>
+    <div class="card" style="color:var(--g3);font-size:13px;padding:32px;text-align:center;">
+      Existing medication and prescription fields — unchanged from current CareStudio
+    </div>
+  </div>
+
+  <!-- ── FINAL REVIEW ── -->
+  <div class="tab-panel" id="tab-review">
+    <div class="section-heading">Final Review</div>
+    <div class="card" style="color:var(--g3);font-size:13px;padding:32px;text-align:center;">
+      Existing final review fields — unchanged from current CareStudio
+    </div>
+  </div>
+
+</div><!-- end content -->
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const S = {
+  gender:null, fbs:null, chronic:null, smoking:null, alcohol:null, sleep:null,
+  waistMen:null, waistWomen:null, comorb:[],
+  bmi:null,
+  tested:null, hba1c:null, family:null, tg:null, symp:null,
+  snore:null, joint:null, infec:null,
+  hdl:null, nafld:null, chest:null,
+  htn:null, htnDur:null, vascSymp:null, heartFam:null,
+};
+
+// ── TAB SWITCH ────────────────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  const tabs = ['patient','medical','lifestyle','cohort','medication','review'];
+  const idx = tabs.indexOf(id);
+  document.querySelectorAll('.main-tab')[idx].classList.add('active');
+  // Update conditional sections when switching to cohort tab
+  if (id === 'cohort') updateConditionalSections();
+}
+
+// ── CHIP HELPERS ──────────────────────────────────────────────────────────────
+function selectChip(key, val, el) {
+  el.closest('.chip-group').querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  S[key] = val;
+}
+
+function toggleComorb(val, el) {
+  document.getElementById('comorbNoneChip').classList.remove('selected');
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!S.comorb.includes(val)) S.comorb.push(val);
+  } else {
+    S.comorb = S.comorb.filter(v => v !== val);
+  }
+  calcScore();
+  updateConditionalSections();
+}
+
+function clearComorb(el) {
+  document.querySelectorAll('#comorbChips .chip:not(#comorbNoneChip)').forEach(c => c.classList.remove('selected'));
+  S.comorb = [];
+  el.classList.toggle('selected');
+  calcScore();
+  updateConditionalSections();
+}
+
+// ── WAIST ─────────────────────────────────────────────────────────────────────
+function updateWaist() {
+  S.gender = document.getElementById('gender').value;
+  const hint = document.getElementById('waistHint');
+  if (S.gender === 'Male') {
+    document.getElementById('waistMenBlock').style.display = 'block';
+    document.getElementById('waistWomenBlock').style.display = 'none';
+    hint.style.display = 'none';
+  } else if (S.gender === 'Female') {
+    document.getElementById('waistWomenBlock').style.display = 'block';
+    document.getElementById('waistMenBlock').style.display = 'none';
+    hint.style.display = 'none';
+  }
+  calcScore();
+  updateConditionalSections();
+}
+
+// ── HBA1C ─────────────────────────────────────────────────────────────────────
+function toggleHba1c() {
+  document.getElementById('hba1cField').style.display = S.tested === 'Yes' ? 'block' : 'none';
+}
+
+// ── BMI ───────────────────────────────────────────────────────────────────────
+function calcBMI() {
+  const h = parseFloat(document.getElementById('height').value);
+  const w = parseFloat(document.getElementById('weight').value);
+  const tag = document.getElementById('bmiTag');
+  if (h && w && h > 0) {
+    const bmi = w / ((h/100)**2);
+    S.bmi = bmi;
+    const cat = bmi < 18.5 ? 'Underweight' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Overweight' : bmi < 35 ? 'Obese I' : 'Obese II+';
+    tag.textContent = `BMI: ${bmi.toFixed(1)} — ${cat}`;
+  } else {
+    S.bmi = null;
+    tag.textContent = '';
+  }
+  calcScore();
+  updateConditionalSections();
+}
+
+// ── SCORE ─────────────────────────────────────────────────────────────────────
+function calcScore() {
+  const age = parseInt(document.getElementById('age').value) || null;
+  let sc = { age:0, bmi:0, waist:0, chronic:0, smoke:0, alcohol:0, sleep:0 };
+
+  if (age !== null) {
+    sc.age = age <= 29 ? 0 : age <= 39 ? 2 : age <= 49 ? 4 : 5;
+  }
+  if (S.bmi !== null) {
+    const b = S.bmi;
+    sc.bmi = b < 25 ? 0 : b < 30 ? 4 : b < 35 ? 5 : b < 45 ? 6 : 7;
+  }
+  const waist = S.gender === 'Male' ? S.waistMen : S.waistWomen;
+  if (waist) {
+    if (S.gender === 'Male') {
+      sc.waist = ['28-32','34-36'].includes(waist) ? 0 : waist === '38-40' ? 6 : 7;
+    } else {
+      sc.waist = ['28-30','30-34'].includes(waist) ? 0 : waist === '34-36' ? 6 : 7;
+    }
+  }
+  if (S.chronic === 'Yes') sc.chronic = 5;
+  if (S.smoking === 'Yes') sc.smoke = 5;
+  if (S.alcohol === 'Yes') sc.alcohol = 5;
+  if (S.sleep === '10+') sc.sleep = 4;
+  else if (S.sleep === '5-6') sc.sleep = 2;
+
+  const total = Object.values(sc).reduce((a,b) => a+b, 0);
+
+  document.getElementById('totalScore').textContent = total;
+  document.getElementById('sAge').textContent    = age !== null ? sc.age : '—';
+  document.getElementById('sBMI').textContent    = S.bmi !== null ? sc.bmi : '—';
+  document.getElementById('sWaist').textContent  = waist ? sc.waist : '—';
+  document.getElementById('sChronic').textContent = S.chronic ? sc.chronic : '—';
+  document.getElementById('sSmoke').textContent  = S.smoking ? sc.smoke : '—';
+  document.getElementById('sAlcohol').textContent = S.alcohol ? sc.alcohol : '—';
+  document.getElementById('sSleep').textContent  = S.sleep ? sc.sleep : '—';
+
+  updateConditionalSections();
+}
+
+// ── CONDITIONAL SECTIONS ──────────────────────────────────────────────────────
+function updateConditionalSections() {
+  const modFlag = (S.bmi !== null && S.bmi > 25) ||
+    (S.gender === 'Male' && ['38-40','40+'].includes(S.waistMen)) ||
+    (S.gender === 'Female' && ['34-36','36+'].includes(S.waistWomen));
+  const cholFlag = S.comorb.includes('cholesterol');
+  const bpFlag   = S.comorb.includes('hypertension');
+  window._flags = { modFlag, cholFlag, bpFlag };
+  document.getElementById('sec3').classList.toggle('visible', !!modFlag);
+  document.getElementById('sec4').classList.toggle('visible', !!cholFlag);
+  document.getElementById('sec5').classList.toggle('visible', !!bpFlag);
+}
+
+// ── COHORT ASSIGNMENT ─────────────────────────────────────────────────────────
+function assignCohort() {
+  if (!S.tested || !S.family || !S.tg || !S.symp) {
+    document.getElementById('valMsg').classList.add('show');
+    return;
+  }
+  document.getElementById('valMsg').classList.remove('show');
+
+  const fbs = S.fbs;
+  const hba1c = S.hba1c;
+  const comorb = S.comorb;
+  const { modFlag, cholFlag, bpFlag } = window._flags || {};
+
+  const isDiabetic    = fbs === 'diabetic' || hba1c === 'diabetic';
+  const isPrediabetes = fbs === 'prediabetes' || hba1c === 'prediabetes';
+  const hasChol       = comorb.includes('cholesterol') || cholFlag;
+  const hasBP         = comorb.includes('hypertension') || bpFlag;
+  const hasMOD        = modFlag;
+
+  let cohort = null, reason = '', override = null, prescNote = null;
+
+  if (isDiabetic && hasChol && hasBP) {
+    cohort = 3; override = "Diabetes + Hypertension + Cholesterol";
+    reason = "All three comorbidities present. Override rule assigns to Cohort 3 (Dyslipidemia).";
+    prescNote = "Add BP Care to prescription.";
+  } else if (isDiabetic && !hasChol && !hasBP && !hasMOD) {
+    cohort = 3; override = "Diabetes — no comorbidities";
+    reason = "Diabetic with no comorbidities. Override assigns to Cohort 3.";
+    prescNote = "Do NOT add BP Care to prescription.";
+  } else if (isPrediabetes && hasChol) {
+    cohort = 2; override = "Prediabetes + High Cholesterol";
+    reason = "Prediabetes with cholesterol — medicines in Cohort 2 address cholesterol also.";
+  } else if (isPrediabetes && hasBP) {
+    cohort = 2; override = "Prediabetes + Hypertension";
+    reason = "Prediabetes with hypertension. Assigned to Cohort 2 (Prediabetes).";
+    prescNote = "Add BP to prescription.";
+  } else if (hasMOD) {
+    cohort = 1;
+    reason = `BMI ${S.bmi ? S.bmi.toFixed(1) : ''} and/or elevated waist indicates metabolic / obesity-driven pattern.`;
+  } else if (isPrediabetes) {
+    cohort = 2;
+    reason = "FBS in the 100–120 mg/dl range confirms prediabetes. Insulin resistance pattern.";
+  } else if (hasChol) {
+    cohort = 3;
+    reason = "High cholesterol flagged. Lipotoxic / dyslipidemia pathway dominant.";
+  } else if (hasBP) {
+    cohort = 4;
+    reason = "Hypertension flagged as primary comorbidity. Vascular pathway dominant.";
+  } else {
+    cohort = isDiabetic ? 3 : 2;
+    reason = "Default assignment based on glycaemic profile.";
+  }
+
+  renderResult(cohort, reason, override, prescNote);
+}
+
+const COHORTS = {
+  1: { name:"Metabolic / Obesity (MOD)", desc:"Adipose-inflammatory pathway. Focus on metabolism reset, fat reduction, and inflammatory modulation.", color:"cohort-1" },
+  2: { name:"Prediabetes", desc:"Hyperinsulinemic / insulin resistance pathway. Reversible with correct protocol. Focus on IR reduction and glycaemic stabilisation.", color:"cohort-2" },
+  3: { name:"Dyslipidemia / T2D + Cholesterol", desc:"Lipotoxic pathway. Dyslipidemia and oxidative stress co-driving blood sugar dysregulation. NAFLD risk elevated.", color:"cohort-3" },
+  4: { name:"Hypertension / T2D + BP", desc:"Vascular pathway. Endothelial dysfunction alongside glucose dysregulation. Protocol targets vascular protection and BP.", color:"cohort-4" },
+};
+
+function renderResult(cohort, reason, override, prescNote) {
+  const cd = COHORTS[cohort];
+  const html = `
+    <div class="result-hero ${cd.color}">
+      <div class="result-num">Cohort ${cohort} of 4 — Assigned</div>
+      <div class="result-name">${cd.name}</div>
+      <div class="result-desc">${cd.desc}</div>
+    </div>
+
+    <div class="result-detail-card">
+      <div class="result-detail-label">${override ? 'Override Rule Applied' : 'Assignment Reasoning'}</div>
+      ${override ? `<div class="override-tag">⚡ ${override}</div><br>` : ''}
+      <div class="result-detail-body">${reason}</div>
+      ${prescNote ? `<div class="presc-note">📋 &nbsp;<strong>Prescription note:</strong> ${prescNote}</div>` : ''}
+    </div>
+
+    <div class="result-detail-card">
+      <div class="result-detail-label">Kit Composition — Cohort ${cohort}</div>
+      <div class="kit-grid">
+        <div class="kit-card"><div class="kit-card-label">Month 1</div><div class="kit-card-val">Pending — Dr Suprabha &amp; Pankti</div></div>
+        <div class="kit-card"><div class="kit-card-label">Month 2</div><div class="kit-card-val">Pending — Dr Suprabha &amp; Pankti</div></div>
+        <div class="kit-card"><div class="kit-card-label">Month 3</div><div class="kit-card-val">Pending — Dr Suprabha &amp; Pankti</div></div>
+      </div>
+    </div>
+  `;
+  const block = document.getElementById('resultBlock');
+  block.innerHTML = html;
+  block.style.display = 'block';
+  block.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function resetCohort() {
+  document.getElementById('resultBlock').style.display = 'none';
+  document.getElementById('resultBlock').innerHTML = '';
+  document.querySelectorAll('#tab-cohort .chip').forEach(c => c.classList.remove('selected'));
+  ['tested','hba1c','family','tg','symp','snore','joint','infec','hdl','nafld','chest','htn','htnDur','vascSymp','heartFam']
+    .forEach(k => S[k] = null);
+  document.getElementById('hba1cField').style.display = 'none';
+  document.getElementById('valMsg').classList.remove('show');
+}
+</script>
+</body>
+</html>
